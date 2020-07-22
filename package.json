@@ -1,0 +1,22 @@
+{
+  "name": "victorscopy",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vmrodriguez90/victorscopy.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vmrodriguez90/victorscopy/issues"
+  },
+  "homepage": "https://github.com/vmrodriguez90/victorscopy#readme",
+  "dependencies": {
+    "node-telegram-bot-api": "^0.50.0"
+  }
+}
