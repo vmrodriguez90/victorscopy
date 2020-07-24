@@ -21,6 +21,9 @@
   },
   "homepage": "https://github.com/vmrodriguez90/victorscopy#readme",
   "dependencies": {
+    "fs": "0.0.1-security",
+    "https": "^1.0.0",
+    "request": "^2.88.2",
     "tgapi": "^2.2.6"
   }
 }
