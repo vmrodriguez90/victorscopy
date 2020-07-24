@@ -1,8 +1,8 @@
 
-const botToken = '1295664824:AAFT0FL_IulLhy9ZO-9AjH23opBf6Lvyt4s';
-const telegramFileURL = 'https://api.telegram.org/file/bot';
-const telegramURL = 'https://api.telegram.org/bot';
-const fileName = 'fileToVideoNote.mp4';
+const botToken = process.env.TELEGRAM_TOKEN || '1295664824:AAFT0FL_IulLhy9ZO-9AjH23opBf6Lvyt4s';
+const telegramFileURL = process.env.TELEGRAMURL || 'https://api.telegram.org/file/bot';
+const telegramURL = process.env.TELEGRAMFILEURL || 'https://api.telegram.org/bot';
+const fileName = process.env.FILE_NAME || 'fileToVideoNote.mp4';
 
 const { Bot } = require('tgapi')
 const fs = require('fs')
@@ -12,10 +12,11 @@ const request = require('request');
 const bot = new Bot(botToken);
 
 const polling = bot.polling({
-    limit: 50,
-    timeout: 60,
-  })
+    limit: 7776000,
+    timeout: 7776000,  
+  });
   
+
 polling.on('message', onUpdate);
 
 async function onUpdate(message) { 
@@ -24,7 +25,7 @@ async function onUpdate(message) {
     if (message && message.video) {
         let video = message.video;
         if(!checkVideo(video)) {
-            await bot.sendMessage({chat_id: chatData.id, text: "Oh no, the video is not 1:1 ratio or the size is bigger than 8mb"});
+            let message = await bot.sendMessage({chat_id: chatData.id, text: "Oh no, the video is not 1:1 ratio or the size is bigger than 8mb"});
             return;
         }
         console.log('Video File Id: ', video.file_id);
@@ -71,12 +72,18 @@ async function sendVideoNote(chatId) {
         if (videoResponse.ok && videoResponse.result ) {
             console.log('Video Note: ', videoResponse.result.video_note );
             let videoNote = videoResponse.result.video_note;
-            sendFinalMessage(videoNote);
+            sendFinalMessage(chatId, videoNote);
         }
     });
 }
-async function sendFinalMessage(videoNote) {
-    await bot.sendMessage({ chat_id: chatId, message: `Video Note Sent!\n ID: \`${videoNote.file_id}\` duration: ${videoNote.duration}`});
+async function sendFinalMessage(chatId, videoNote) {
+    let message = await bot.sendMessage({ 
+        chat_id: chatId, 
+        parse_mode: 'HTML',
+        text: `Video Note Sent!\n ID: <pre>${videoNote.file_id}</pre> duration: ${videoNote.duration}`
+    });
+
+    console.log(message);
 }
 
 async function getFileAndSaveIt(path) {
@@ -102,7 +109,12 @@ function checkVideo(video) {
     // if (ratio > 1.2 ) {
     //     return false;
     // }
+    if (video.mime_type !== 'video/mp4') {
+        console.error('MimeType not mp4 but: ', video.mime_type);
+        return false;
+    }
     if (video.file_size >= 8389000) {
+        console.error('File Size is more than 8mb: ', video.file_size);
         return false;
     }
 
