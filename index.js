@@ -15,7 +15,7 @@ var bot = new Bot('');
 // parse various different custom JSON types as JSON
 app.use(bodyParser.json())
 
-app.post('/', async function (req, res) {
+app.post('/api/file', async function (req, res) {
     let bodyRequest = req.body;
     bot = new Bot(bodyRequest.token);
     botToken = bodyRequest.token;
@@ -37,7 +37,8 @@ app.post('/', async function (req, res) {
 });
 
 app.listen(process.env.PORT || 8080, function () {
-  console.log('Example app listening on port 3000!');
+    var port = server.address().port;
+    console.log("App now running on port", port);
 });
 
 async function sendVideoNote(chatId) {
