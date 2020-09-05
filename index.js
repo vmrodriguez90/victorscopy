@@ -48,7 +48,7 @@ app.post('/api/convertDate', async function (req, res) {
     let timezonedTime = moment().utcOffset(parsedTimezone);
     let actualUserHour = timezonedTime.hour();
     timezonedTime.set({'hour': 9, 'minute': 0, 'second': 0});
-    timezonedTime.add(actualUserHour >= 9? 1 : 0, 'd');
+    timezonedTime.add(actualUserHour >= 2? 1 : 0, 'd');
     console.log('When is gonna be?', timezonedTime.format());
     res.send({
         'timezone': parsedTimezone,
