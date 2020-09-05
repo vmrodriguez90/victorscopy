@@ -9,8 +9,10 @@ const fs = require('fs')
 const https = require('https')
 const request = require('request');
 var express = require('express');
+var moment = require('moment-timezone');
 var app = express();
-var bodyParser = require('body-parser')
+var bodyParser = require('body-parser');
+const { post } = require('request');
 var bot = new Bot('');
 // parse various different custom JSON types as JSON
 app.use(bodyParser.json())
@@ -21,6 +23,7 @@ app.post('/api/file', async function (req, res) {
     botToken = bodyRequest.token;
     let fileUrl = bodyRequest.file_url;
     let chatId = bodyRequest.chat_id;
+    
     console.log('Params: ', fileUrl, chatId);
     await getFileAndSaveIt(fileUrl).then(async (stream) => {
         console.log('Aca entro!');
@@ -36,7 +39,24 @@ app.post('/api/file', async function (req, res) {
     });
 });
 
-var server = app.listen(process.env.PORT || 8080, function () {
+app.post('/api/convertDate', async function (req, res) {
+    let bodyRequest = req.body;
+    let received = moment(bodyRequest.date_received, 'hh:mm:ss').hour();
+    let now = moment().utc();
+    let timezone = (received - now.hour());
+    let parsedTimezone = (timezone < 0 ? '-': '')+`${timezone.toString().replace('-', '').padStart(2, '0')}:00`;
+    let timezonedTime = moment().utcOffset(parsedTimezone);
+    let actualUserHour = timezonedTime.hour();
+    timezonedTime.set({'hour': 9, 'minute': 0, 'second': 0});
+    timezonedTime.add(actualUserHour >= 9? 1 : 0, 'd');
+    console.log('When is gonna be?', timezonedTime.format());
+    res.send({
+        'timezone': parsedTimezone,
+        'tomorrowMorning': timezonedTime.format()
+    });
+});
+
+var server = app.listen(process.env.PORT || 3000, function () {
     var port = server.address().port;
     console.log("App now running on port", port);
 });
