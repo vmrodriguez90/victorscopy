@@ -42,7 +42,9 @@ app.post('/api/file', async function (req, res) {
 app.post('/api/convertDate', async function (req, res) {
     let bodyRequest = req.body;
     let received = moment(bodyRequest.date_received, 'hh:mm:ss').hour();
+    console.log('Hour received: ', received);
     let now = moment().utc();
+    console.log('Now Hour:', now.hour());
     let timezone = (received - now.hour());
     let parsedTimezone = (timezone < 0 ? '-': '')+`${timezone.toString().replace('-', '').padStart(2, '0')}:00`;
     let timezonedTime = moment().utcOffset(parsedTimezone);
