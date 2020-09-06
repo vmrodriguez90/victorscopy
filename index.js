@@ -42,16 +42,22 @@ app.post('/api/file', async function (req, res) {
 app.post('/api/convertDate', async function (req, res) {
     let bodyRequest = req.body;
     let received = moment(bodyRequest.date_received, 'hh:mm:ss').hour();
-    console.log('Hour received: ', received);
+    
     let now = moment().utc();
     console.log('Now Hour:', now.hour());
+    console.log('Hour received: ', received);
     let timezone = (received - now.hour());
-    let parsedTimezone = (timezone < 0 ? '-': '')+`${timezone.toString().replace('-', '').padStart(2, '0')}:00`;
+    if (timezone < -9) {
+        timezone = timezone === -10? 14: 14 + (timezone+10);
+        console.log('timezone:', timezone);
+    } else {
+        console.log('timezone:', timezone);
+    }
+    let parsedTimezone = (timezone < 0 ? '-': '+')+`${timezone.toString().replace('-', '').padStart(2, '0')}:00`;
+
     let timezonedTime = moment().utcOffset(parsedTimezone);
-    let actualUserHour = timezonedTime.hour();
     timezonedTime.set({'hour': 9, 'minute': 0, 'second': 0});
-    timezonedTime.add(actualUserHour >= 2? 1 : 0, 'd');
-    console.log('When is gonna be?', timezonedTime.format());
+    timezonedTime.add(received >= 2? 1 : 0, 'd');
     res.send({
         'timezone': parsedTimezone,
         'tomorrowMorning': timezonedTime.format()
