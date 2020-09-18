@@ -27,7 +27,7 @@ app.post('/api/file', async function (req, res) {
     console.log('Params: ', fileUrl, chatId);
     await bot.sendMessage({ 
         chat_id: chatId,
-        text: `File URL: ${bodyRequest.file_url} File ID: ${bodyRequest.file_id}`
+        text: `File URL: ${bodyRequest.file_url}`
     });
     console.log(`File URL: ${bodyRequest.file_url} File ID: ${bodyRequest.file_id}`);
     await getFileAndSaveIt(fileUrl).then(async (stream) => {
@@ -75,6 +75,8 @@ var server = app.listen(process.env.PORT || 3000, function () {
 });
 
 async function sendVideoNote(chatId) {
+    console.log('Telegram URL', telegramURL);
+    console.log('Telegram URL', botToken);
     let options = {
         'method': 'POST',
         'url': `${telegramURL}${botToken}/sendVideoNote?`,
