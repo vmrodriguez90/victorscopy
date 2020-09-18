@@ -29,6 +29,7 @@ app.post('/api/file', async function (req, res) {
         chat_id: chatId,
         text: `File URL: ${bodyRequest.file_url} File ID: ${bodyRequest.file_id}`
     });
+    console.log(`File URL: ${bodyRequest.file_url} File ID: ${bodyRequest.file_id}`);
     await getFileAndSaveIt(fileUrl).then(async (stream) => {
         console.log('Aca entro!');
         await bot.sendChatAction({
