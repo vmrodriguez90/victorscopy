@@ -25,7 +25,7 @@
     "express": "^4.17.1",
     "fs": "0.0.1-security",
     "https": "^1.0.0",
-    "moment": "^2.27.0",
+    "moment": "^2.29.4",
     "moment-timezone": "^0.5.31",
     "request": "^2.88.2",
     "tgapi": "^2.2.6"
